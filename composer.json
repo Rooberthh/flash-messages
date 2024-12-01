@@ -1,6 +1,6 @@
 {
-    "name": "rooberthh/php-package-starter",
-    "description": "A php package base.",
+    "name": "rooberthh/flash-message",
+    "description": "A message to handle multiple flash-messages for any number of scenarios.",
     "type": "library",
     "keywords": [
         "php",
@@ -15,26 +15,33 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/rooberthh/php-package-starter/issues"
+        "issues": "https://github.com/rooberthh/flash-message/issues"
     },
     "funding": [],
     "require": {
-        "php": "^8.3"
+        "php": "^8.3",
+        "illuminate/config": "^11.33",
+        "illuminate/console": "^11.33",
+        "illuminate/contracts": "^11.33",
+        "illuminate/database": "^11.33",
+        "illuminate/events": "^11.33",
+        "illuminate/support": "^11.33"
     },
     "require-dev": {
         "laravel/pint": "^1.13.7",
+        "orchestra/testbench": "^9.6",
         "pestphp/pest": "^3.5",
         "phpstan/phpstan": "^1.10.50"
     },
     "suggest": {},
     "autoload": {
         "psr-4": {
-            "Rooberthh\\PackageStarter\\": "src/"
+            "Rooberthh\\FlashMessage\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Rooberthh\\PackageStarter\\Tests\\": "tests/"
+            "Rooberthh\\FlashMessage\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "stable",
