@@ -4,6 +4,7 @@ namespace Rooberthh\FlashMessage\Domain\Support\Objects;
 
 use DateTimeInterface;
 use Rooberthh\FlashMessage\Domain\Models\FlashMessage as FlashMessageModel;
+use Rooberthh\FlashMessage\Domain\Support\Enums\Status;
 
 class FlashMessage
 {
@@ -12,7 +13,7 @@ class FlashMessage
         public string $reference,
         public null|string $parentId,
         public string $channel,
-        public string $status,
+        public Status $status,
         public string $title,
         public string $description,
         public null|DateTimeInterface $flashed_at,
@@ -39,7 +40,7 @@ class FlashMessage
             reference: $data['reference'],
             parentId: $data['parent_id'],
             channel: $data['channel'],
-            status: $data['status'],
+            status: Status::from($data['status']),
             title: $data['title'],
             description: $data['description'],
             flashed_at: $data['flashed_at'],

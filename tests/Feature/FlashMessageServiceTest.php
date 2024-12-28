@@ -6,6 +6,7 @@ use Rooberthh\FlashMessage\Domain\Models\FlashMessage;
 use Rooberthh\FlashMessage\Domain\Services\FlashMessageService;
 use Rooberthh\FlashMessage\Domain\Stores\DatabaseStore;
 use Rooberthh\FlashMessage\Domain\Stores\SessionStore;
+use Rooberthh\FlashMessage\Domain\Support\Enums\Status;
 use Rooberthh\FlashMessage\Domain\Support\Objects\CreateFlashMessage;
 use Rooberthh\FlashMessage\Tests\FlashMessageTestCase;
 
@@ -23,7 +24,7 @@ it('can store flash-message using a database store', function () {
         reference: $uuid,
         parentId: null,
         channel: 'default',
-        status: 'warning',
+        status: Status::WARNING,
         title: 'Title',
         description: 'Description',
     );
@@ -50,7 +51,7 @@ it('can swap store for the flash messages', function () {
         reference: Str::uuid(),
         parentId: null,
         channel: 'default',
-        status: 'warning',
+        status: Status::INFO,
         title: 'Title',
         description: 'Description',
     );

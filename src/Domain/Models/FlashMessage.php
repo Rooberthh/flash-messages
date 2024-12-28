@@ -3,6 +3,7 @@
 namespace Rooberthh\FlashMessage\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Rooberthh\FlashMessage\Domain\Support\Enums\Status;
 
 class FlashMessage extends Model
 {
@@ -19,6 +20,7 @@ class FlashMessage extends Model
     {
         return [
             'flashed_at' => 'datetime',
+            'status' => Status::class,
         ];
     }
 
