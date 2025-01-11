@@ -14,7 +14,7 @@ class Messages extends Component
         $messages = collect($this->service->getAll());
 
         $messages = $messages->filter(function ($message) {
-            return $message->channel === $this->channel && ! $message->flashed_at;
+            return $message->channel === $this->channel;
         })
         ->values();
 

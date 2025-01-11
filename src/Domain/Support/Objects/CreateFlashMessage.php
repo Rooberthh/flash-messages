@@ -26,7 +26,6 @@ readonly class CreateFlashMessage
             'status' => $this->status->value,
             'title' => $this->title,
             'description' => $this->description,
-            'flashed_at' => null,
         ];
     }
 }
