@@ -2,21 +2,22 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Rooberthh\FlashMessage\Domain\Models\FlashMessage;
 use Rooberthh\FlashMessage\Domain\Services\FlashMessageService;
 use Rooberthh\FlashMessage\Domain\Stores\DatabaseStore;
 use Rooberthh\FlashMessage\Domain\Stores\SessionStore;
 use Rooberthh\FlashMessage\Domain\Support\Enums\Status;
 use Rooberthh\FlashMessage\Domain\Support\Objects\CreateFlashMessage;
+use Rooberthh\FlashMessage\Domain\Support\Objects\FlashMessage;
+use Rooberthh\FlashMessage\Infrastructure\Contracts\FlashMessageStoreContract;
 use Rooberthh\FlashMessage\Tests\FlashMessageTestCase;
 
 uses(FlashMessageTestCase::class);
 uses(RefreshDatabase::class);
 
-it('can store flash-message using a database store', function () {
+it('can store flash-message using a store', function (FlashMessageStoreContract $store) {
     $service = new FlashMessageService();
 
-    $service->store(new DatabaseStore());
+    $service->store($store);
 
     $uuid = Str::uuid();
 
@@ -36,9 +37,60 @@ it('can store flash-message using a database store', function () {
     expect($message)->not->toBeNull()
         ->and($message->title)
         ->toBe('Title')
-        ->and(FlashMessage::query()->where('reference', $uuid)->firstOrFail())
+        ->and($message)
         ->toBeInstanceOf(FlashMessage::class);
-});
+})->with([new DatabaseStore(), new SessionStore()]);
+
+it('can delete a flash-message using a database store', function (FlashMessageStoreContract $store) {
+    $service = new FlashMessageService();
+    $service->store($store);
+
+    $newMessage = new CreateFlashMessage(
+        reference: Str::uuid(),
+        parentId: null,
+        channel: 'default',
+        status: Status::WARNING,
+        title: 'Title',
+        description: 'Description',
+    );
+
+    $newMessage = $service->flash($newMessage);
+
+    $service->delete($newMessage->reference);
+
+    expect($service->getAll())->toBeEmpty();
+})->with([new DatabaseStore(), new SessionStore()]);
+
+it('can purge all flash-message using a database store', function (FlashMessageStoreContract $store) {
+    $service = new FlashMessageService();
+
+    $service->store($store);
+
+    $newMessage = new CreateFlashMessage(
+        reference: Str::uuid(),
+        parentId: null,
+        channel: 'default',
+        status: Status::WARNING,
+        title: 'Title',
+        description: 'Description',
+    );
+
+    $newMessage2 = new CreateFlashMessage(
+        reference: Str::uuid(),
+        parentId: null,
+        channel: 'default',
+        status: Status::WARNING,
+        title: 'Title',
+        description: 'Description',
+    );
+
+    $newMessage = $service->flash($newMessage);
+    $newMessage2 = $service->flash($newMessage2);
+
+    $service->purge();
+
+    expect($service->getAll())->toBeEmpty();
+})->with([new DatabaseStore(), new SessionStore()]);
 
 it('can swap store for the flash messages', function () {
     $service = new FlashMessageService();

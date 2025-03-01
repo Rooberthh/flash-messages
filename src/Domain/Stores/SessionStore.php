@@ -12,7 +12,7 @@ class SessionStore implements FlashMessageStoreContract
 
     public function getAll(): array
     {
-        $messages = session()->get(self::SESSION_KEY);
+        $messages = session()->get(self::SESSION_KEY, []);
 
         return array_map(function ($message) {
             return FlashMessage::fromArray($message);
@@ -30,7 +30,7 @@ class SessionStore implements FlashMessageStoreContract
 
     public function store(CreateFlashMessage $message): FlashMessage
     {
-        $messages = session()->get(self::SESSION_KEY);
+        $messages = session()->get(self::SESSION_KEY, []);
 
         $messages[] = $message->toArray();
 
@@ -41,7 +41,7 @@ class SessionStore implements FlashMessageStoreContract
 
     public function delete(string $id): void
     {
-        $messages = session()->get(self::SESSION_KEY);
+        $messages = session()->get(self::SESSION_KEY, []);
 
         $messages = array_filter($messages, function ($message) use ($id) {
             return $message['reference'] !== $id;

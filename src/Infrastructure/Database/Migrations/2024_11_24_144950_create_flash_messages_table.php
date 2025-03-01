@@ -12,15 +12,17 @@ return new class extends Migration {
     {
         Schema::create('flash_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('reference')->unique();
+            $table->uuid('reference')->unique();
             $table->uuid('parent_id')->nullable()->index();
             $table->string('channel')->index();
             $table->string('status');
             $table->string('title');
             $table->text('description');
-            $table->timestamp('flashed_at')->nullable();
+            $table->boolean('temporary');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('parent_id')->references('parent_id')->on('flash_messages');
         });
     }
 

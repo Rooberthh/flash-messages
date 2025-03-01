@@ -13,6 +13,7 @@ readonly class CreateFlashMessage
         public Status $status = Status::SUCCESS,
         public string $title,
         public string $description,
+        public bool $temporary = true,
     ) {
         //
     }
@@ -26,6 +27,7 @@ readonly class CreateFlashMessage
             'status' => $this->status->value,
             'title' => $this->title,
             'description' => $this->description,
+            'temporary' => $this->temporary,
         ];
     }
 }

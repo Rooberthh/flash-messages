@@ -12,7 +12,7 @@ class DatabaseStore implements FlashMessageStoreContract
 {
     public function getAll(): array
     {
-        return FlashMessage::all()->toArray();
+        return FlashMessageModel::all()->toArray();
     }
 
     public function get($id): FlashMessage
@@ -31,6 +31,7 @@ class DatabaseStore implements FlashMessageStoreContract
         $flashMessage->status = $message->status;
         $flashMessage->title = $message->title;
         $flashMessage->description = $message->description;
+        $flashMessage->temporary = $message->temporary;
         $flashMessage->save();
 
         return FlashMessage::fromModel($flashMessage);
@@ -38,11 +39,11 @@ class DatabaseStore implements FlashMessageStoreContract
 
     public function delete($id): void
     {
-        // TODO: Implement delete() method.
+        FlashMessageModel::query()->where('reference', $id)->delete();
     }
 
     public function purge(): void
     {
-        // TODO: Implement purge() method.
+        FlashMessageModel::query()->delete();
     }
 }

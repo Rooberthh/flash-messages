@@ -13,7 +13,7 @@ class FlashMessage extends Model
         'status',
         'title',
         'description',
-        'flashed_at',
+        'temporary',
     ];
 
     public function casts()
@@ -21,6 +21,7 @@ class FlashMessage extends Model
         return [
             'flashed_at' => 'datetime',
             'status' => Status::class,
+            'temporary' => 'boolean',
         ];
     }
 
