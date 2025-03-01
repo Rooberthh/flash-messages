@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use Rooberthh\FlashMessage\Domain\Services\FlashMessageService;
 use Rooberthh\FlashMessage\Domain\Stores\DatabaseStore;
 use Rooberthh\FlashMessage\Domain\Stores\SessionStore;
+use Rooberthh\FlashMessage\Domain\Support\Enums\Driver;
 use Rooberthh\FlashMessage\Domain\Support\Enums\Status;
 use Rooberthh\FlashMessage\Domain\Support\Objects\CreateFlashMessage;
 use Rooberthh\FlashMessage\Domain\Support\Objects\FlashMessage;
@@ -30,7 +31,9 @@ it('can store flash-message using a store', function (FlashMessageStoreContract 
         description: 'Description',
     );
 
-    $newMessage = $service->flash($newMessage);
+    expect($service->getAll())->toBeEmpty();
+
+    $service->flash($newMessage);
 
     $message = $service->get($newMessage->reference);
 
@@ -41,7 +44,7 @@ it('can store flash-message using a store', function (FlashMessageStoreContract 
         ->toBeInstanceOf(FlashMessage::class);
 })->with([new DatabaseStore(), new SessionStore()]);
 
-it('can delete a flash-message using a database store', function (FlashMessageStoreContract $store) {
+it('can delete a flash-message using a store', function (FlashMessageStoreContract $store) {
     $service = new FlashMessageService();
     $service->store($store);
 
@@ -56,12 +59,14 @@ it('can delete a flash-message using a database store', function (FlashMessageSt
 
     $newMessage = $service->flash($newMessage);
 
+    expect($service->getAll())->not->toBeEmpty();
+
     $service->delete($newMessage->reference);
 
     expect($service->getAll())->toBeEmpty();
 })->with([new DatabaseStore(), new SessionStore()]);
 
-it('can purge all flash-message using a database store', function (FlashMessageStoreContract $store) {
+it('can purge all flash-message using a store', function (FlashMessageStoreContract $store) {
     $service = new FlashMessageService();
 
     $service->store($store);
@@ -84,8 +89,10 @@ it('can purge all flash-message using a database store', function (FlashMessageS
         description: 'Description',
     );
 
-    $newMessage = $service->flash($newMessage);
-    $newMessage2 = $service->flash($newMessage2);
+    $service->flash($newMessage);
+    $service->flash($newMessage2);
+
+    expect(count($service->getAll()))->toBe(2);
 
     $service->purge();
 
@@ -93,7 +100,11 @@ it('can purge all flash-message using a database store', function (FlashMessageS
 })->with([new DatabaseStore(), new SessionStore()]);
 
 it('can swap store for the flash messages', function () {
+    Config::set('flash-message.driver', Driver::DATABASE);
+
     $service = new FlashMessageService();
+
+    expect($service->getStore())->toBeInstanceOf(DatabaseStore::class);
 
     $service->store(new SessionStore());
 
